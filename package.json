@@ -1,0 +1,23 @@
+{
+  "name": "artathon",
+  "version": "1.0.0",
+  "description": "[Play here](https://paveldogreat.github.io/WebGL-Fluid-Simulation/)",
+  "main": "dat.gui.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Zac-hills/WebGL-Fluid-Simulation.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Zac-hills/WebGL-Fluid-Simulation/issues"
+  },
+  "homepage": "https://github.com/Zac-hills/WebGL-Fluid-Simulation#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
+}
