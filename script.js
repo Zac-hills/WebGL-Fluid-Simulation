@@ -31,11 +31,11 @@ let config = {
   SIM_RESOLUTION: 256,
   DYE_RESOLUTION: 1024,
   CAPTURE_RESOLUTION: 512,
-  DENSITY_DISSIPATION: 0.1,
+  DENSITY_DISSIPATION: 0.05,
   VELOCITY_DISSIPATION: 4.0,
   PRESSURE: 0.8,
   PRESSURE_ITERATIONS: 20,
-  CURL: 0,
+  CURL: 5,
   SPLAT_RADIUS: 0.25,
   SPLAT_FORCE: 6000,
   SHADING: true,
@@ -44,7 +44,7 @@ let config = {
   PAUSED: false,
   BACK_COLOR: { r: 0, g: 0, b: 0 },
   TRANSPARENT: false,
-  BLOOM: true,
+  BLOOM: false,
   BLOOM_ITERATIONS: 8,
   BLOOM_RESOLUTION: 256,
   BLOOM_INTENSITY: 0.2,
@@ -1397,7 +1397,6 @@ function updateKeywords() {
 
 updateKeywords();
 initFramebuffers();
-multipleSplats(parseInt(Math.random() * 20) + 5);
 
 let lastUpdateTime = Date.now();
 let colorUpdateTimer = 0.0;
@@ -1994,8 +1993,8 @@ function injectData() {
 
     myPointer.texcoordX += (-1 + Math.random() * 2) *0.25;
     myPointer.texcoordY += (-1 + Math.random() * 2) * 0.25;
-    myPointer.deltaX = (-1 + Math.random() * 2) *0.1;
-    myPointer.deltaY = (-1 + Math.random() * 2) * 0.1;
+    myPointer.deltaX = (-1 + Math.random() * 2) *0.3;
+    myPointer.deltaY = (-1 + Math.random() * 2) * 0.3;
     config.SPLAT_RADIUS = config.data[idx][config.intervalProp[propidx]] / sum * maxValue;
     mySplat(myPointer);
     ++config.intervalCounter;
