@@ -1720,10 +1720,10 @@ function splatPointer(pointer) {
   mySplat(pointer);
 }
 
-function mySplat(pointer) {
+function mySplat(pointer, num=1) {
   let dx = pointer.deltaX * config.SPLAT_FORCE;
   let dy = pointer.deltaY * config.SPLAT_FORCE;
-  for (let i = 0; i < 10; ++i) {
+  for (let i = 0; i < num; ++i) {
     let noiseX = -1 + Math.random() * 2;
     noiseX *= 0.1;
     let noiseY = -1 + Math.random() * 2;
@@ -1990,11 +1990,27 @@ function injectData() {
     };
     const maxValue = 100;
     let tmp = config.data[config.intervalCounter];
+
     myPointer.color = {
-      r: tmp.Joy / maxValue,
-      g: tmp.Anger / maxValue,
-      b: tmp.Sadness / maxValue
+      r: 208,
+      g: 208,
+      b: 174
     };
+    mySplat(myPointer, Math.floor(tmp.Joy / 10));
+  
+  myPointer.color = {
+    r: 216,
+    g: 161,
+    b: 161
+  };
+  mySplat(myPointer, Math.floor(tmp.Anger / 10));
+
+myPointer.color = {
+  r: 171,
+  g: 155,
+  b: 189
+};
+mySplat(myPointer, Math.floor(tmp.Sadness / 10));
     mySplat(myPointer);
     ++config.intervalCounter;
   } else {
