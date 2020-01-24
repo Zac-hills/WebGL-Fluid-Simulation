@@ -35,7 +35,7 @@ let config = {
     VELOCITY_DISSIPATION: 0.2,
     PRESSURE: 0.8,
     PRESSURE_ITERATIONS: 20,
-    CURL: 30,
+    CURL: 0,
     SPLAT_RADIUS: 0.25,
     SPLAT_FORCE: 6000,
     SHADING: true,
@@ -704,11 +704,13 @@ const splatShader = compileShader(gl.FRAGMENT_SHADER, `
     uniform vec3 color;
     uniform vec2 point;
     uniform float radius;
+    uniform float speed;
 
     void main () {
         vec2 p = vUv - point.xy;
         p.x *= aspectRatio;
-        vec3 splat = exp(-dot(p, p) / radius) * color;
+        vec3 dir = normalize(vec3(p.x,p.y,0.0));
+        vec3 splat = exp(-dot(p, p) / radius) * (dir * speed + color);
         vec3 base = texture2D(uTarget, vUv).xyz;
         gl_FragColor = vec4(base + splat, 1.0);
     }
@@ -1400,14 +1402,16 @@ function splat (x, y, dx, dy, color) {
     gl.uniform1i(splatProgram.uniforms.uTarget, velocity.read.attach(0));
     gl.uniform1f(splatProgram.uniforms.aspectRatio, canvas.width / canvas.height);
     gl.uniform2f(splatProgram.uniforms.point, x, y);
-    gl.uniform3f(splatProgram.uniforms.color, dx, dy, 0.0);
+    gl.uniform3f(splatProgram.uniforms.color, 0.0, 0.0, 0.0);
     gl.uniform1f(splatProgram.uniforms.radius, correctRadius(config.SPLAT_RADIUS / 100.0));
+    gl.uniform1f(splatProgram.uniforms.speed, 600);
     blit(velocity.write.fbo);
     velocity.swap();
 
     gl.viewport(0, 0, dye.width, dye.height);
     gl.uniform1i(splatProgram.uniforms.uTarget, dye.read.attach(0));
     gl.uniform3f(splatProgram.uniforms.color, color.r, color.g, color.b);
+    gl.uniform1f(splatProgram.uniforms.speed, 0.0);
     blit(dye.write.fbo);
     dye.swap();
 }
