@@ -56,7 +56,9 @@ let config = {
   INJECT: false,
   data: [],
   intervalHandle: null,
-  intervalCounter: 0
+  intervalCounter: 0,
+  intervalProp:["Joy", "Anger", "Sadness"],
+  intervalColor:[{r:208,g:208,b:174},{r:216,g:161,b:161},{r:171,g:155,b:189}]
 };
 
 function pointerPrototype() {
@@ -1723,19 +1725,13 @@ function splatPointer(pointer) {
 function mySplat(pointer, num=1) {
   let dx = pointer.deltaX * config.SPLAT_FORCE;
   let dy = pointer.deltaY * config.SPLAT_FORCE;
-  for (let i = 0; i < num; ++i) {
-    let noiseX = -1 + Math.random() * 2;
-    noiseX *= 0.1;
-    let noiseY = -1 + Math.random() * 2;
-    noiseY *= 0.1;
     splat(
-      pointer.texcoordX + noiseX,
-      pointer.texcoordY + noiseY,
+      pointer.texcoordX,
+      pointer.texcoordY,
       dx,
       dy,
       pointer.color
     );
-  }
 }
 
 function multipleSplats(amount) {
@@ -1976,11 +1972,13 @@ function hashCode(s) {
 }
 function startInjection() {
   if (config.intervalHandle == null) {
-    config.intervalHandle = setInterval(injectData.bind(this), 500);
+    config.intervalHandle = setInterval(injectData.bind(this), 2000);
   }
 }
 function injectData() {
-  if (config.intervalCounter < config.data.length) {
+  if (config.intervalCounter < config.data.length * 3) {
+    let idx = Math.floor(config.intervalCounter / 3);
+    let propidx = config.intervalCounter % 3;
     let myPointer = {
       texcoordX: 0.5,
       texcoordY: 0.5,
@@ -1988,29 +1986,17 @@ function injectData() {
       deltaY: 0,
       color: { r: 0, g: 0, b: 0 }
     };
-    const maxValue = 100;
-    let tmp = config.data[config.intervalCounter];
+    let tmp = config.data[idx];
+    const maxValue = 0.55;
+    const sum = tmp.Joy + tmp.Anger + tmp.Sadness;
 
-    myPointer.color = {
-      r: 208,
-      g: 208,
-      b: 174
-    };
-    mySplat(myPointer, Math.floor(tmp.Joy / 10));
-  
-  myPointer.color = {
-    r: 216,
-    g: 161,
-    b: 161
-  };
-  mySplat(myPointer, Math.floor(tmp.Anger / 10));
+    myPointer.color = normalizeColor(config.intervalColor[propidx]);
 
-myPointer.color = {
-  r: 171,
-  g: 155,
-  b: 189
-};
-mySplat(myPointer, Math.floor(tmp.Sadness / 10));
+    myPointer.texcoordX += (-1 + Math.random() * 2) *0.25;
+    myPointer.texcoordY += (-1 + Math.random() * 2) * 0.25;
+    myPointer.deltaX = (-1 + Math.random() * 2) *0.1;
+    myPointer.deltaY = (-1 + Math.random() * 2) * 0.1;
+    config.SPLAT_RADIUS = config.data[idx][config.intervalProp[propidx]] / sum * maxValue;
     mySplat(myPointer);
     ++config.intervalCounter;
   } else {
